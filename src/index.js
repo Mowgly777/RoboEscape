@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import logoImg from "./assets/logo.png";
+import roboImg from "./assets/robo.png";
 
 const config = {
   type: Phaser.AUTO,
@@ -15,18 +15,17 @@ const config = {
 const game = new Phaser.Game(config);
 
 function preload() {
-  this.load.image("logo", logoImg);
+  this.load.image("robo", roboImg);
 }
 
+var robo; 
 function create() {
-  const logo = this.add.image(400, 150, "logo");
+  robo = this.add.image(100, 150, "robo");
+  this.input.on('pointerup', function() {
+    robo.x = 500;
+    robo.y = 150;
+  }, this);
 
-  this.tweens.add({
-    targets: logo,
-    y: 450,
-    duration: 2000,
-    ease: "Power2",
-    yoyo: true,
-    loop: -1
-  });
 }
+
+
