@@ -5,10 +5,12 @@ import arrowDown from "./assets/arrowDown.png";
 import arrowRight from "./assets/arrowRight.png";
 import runBtn from "./assets/button.png";
 import roboImg from "./assets/robot.png";
+import keyImg from "./assets/key.png"
 import tile from "./assets/tile.png";
 import grid from "./assets/grid.csv";
 
 let robotMovement = [];
+let keyInHand = false;
 
 function preload() {
   this.load.image("arrowUp", arrowUp);
@@ -17,6 +19,7 @@ function preload() {
   this.load.image("arrowRight", arrowRight);
   this.load.image("runBtn", runBtn);
   this.load.image("robo", roboImg);
+  this.load.image("key", keyImg);
 
   // GRID
   this.load.image('tiles', './src/assets/drawtiles-spaced.png');
@@ -89,38 +92,53 @@ function create() {
   runBtn.displayWidth = 60;
   this.children.bringToTop(runBtn);
 
+  var key = this.add.image(32 * 3 + 16, 32 * 5 + 16, "key");
+  key.displayHeight = 32;
+  key.displayWidth = 32;
+
   this.input.on('pointerup', function (pointer) {
 
     if (pointer.downX >= 300) {
 
       robotMovement.push('DONE');
-      console.log('pointerUp');
       var index = 0;
       var x = robot.x;
       var y = robot.y;
-      console.log("X", robot.x);
-      console.log("X", robot.y);
       for (index = 0; index < robotMovement.length; index++) {
         setTimeout((posIndex) => {
           if (robotMovement[posIndex] === 'arrowUp') {
             robot.y = robot.y - 32;
             if (robot.y < 16 + 32) {
               reset(this, zone, graphics, robot);
+            } else if (x === 32 * 3 + 16 && y === 32 * 5 + 16) {
+              key.destroy();
+              keyInHand = true;
             }
           } else if (robotMovement[posIndex] === 'arrowDown') {
             robot.y = robot.y + 32;
             if (robot.y > 7 * 32) {
               reset(this, zone, graphics, robot);
+            } else if (x === 32 * 3 + 16 && y === 32 * 5 + 16) {
+              key.destroy();
+              keyInHand = true;
             }
           } else if (robotMovement[posIndex] === 'arrowLeft') {
             robot.x = robot.x - 32;
             if (robot.x < 16 + 32) {
               reset(this, zone, graphics, robot);
+            } else if (x === 32 * 3 + 16 && y === 32 * 5 + 16) {
+              key.destroy();
+              keyInHand = true;
             }
           } else if (robotMovement[posIndex] === 'arrowRight') {
             robot.x = robot.x + 32;
             if (robot.y > 7 * 32) {
               reset(this, zone, graphics, robot);
+            } else if (keyInHand && robot.x > 7 * 32) {
+              alert('Well Done! press F5 to try again!')
+            } else if (x === 32 * 3 + 16 && y === 32 * 5 + 16) {
+              key.destroy();
+              keyInHand = true;
             }
           } else if (robotMovement[posIndex] === 'DONE') {
             robotMovement = [];
@@ -130,22 +148,10 @@ function create() {
     }
 
   }, this);
+
 }
 
 function reset(context, zone, graphics, robot) {
-  // graphics.clear();
-  // initImgs(context);
-  // zone = context.add.zone(350, 15, 40, 40).setRectangleDropZone(40, 40);
-  // graphics = context.add.graphics();
-  // initZone(zone, graphics);
-  // robot = context.add.image(32 + 16, 32 + 16, "robo");
-  // robot.displayHeight = 32;
-  // robot.displayWidth = 32;
-
-  // const runBtn = context.add.image(390, 35, "runBtn");
-  // runBtn.displayHeight = 60;
-  // runBtn.displayWidth = 60;
-  // context.children.bringToTop(runBtn);
   alert('Please press F5 to try again');
 }
 
