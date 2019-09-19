@@ -19,8 +19,8 @@ function preload() {
   this.load.image("robo", roboImg);
 
   // GRID
-  this.load.image('tiles', tile);
-  this.load.tilemapCSV('map', grid);
+  this.load.image('tiles', './src/assets/drawtiles-spaced.png');
+  this.load.tilemapCSV('map', './src/assets/grid.csv');
 }
 
 function create() {
