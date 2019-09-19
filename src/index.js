@@ -3,12 +3,12 @@ import arrowUp from "./assets/arrowUp.png";
 import arrowLeft from "./assets/arrowLeft.png";
 import arrowDown from "./assets/arrowDown.png";
 import arrowRight from "./assets/arrowRight.png";
-import runBtn from "./assets/run.png";
+import runBtn from "./assets/button.png";
 import roboImg from "./assets/robot.png";
 import tile from "./assets/tile.png";
 import grid from "./assets/grid.csv";
 
-const robotMovement = [];
+let robotMovement = [];
 
 function preload() {
   this.load.image("arrowUp", arrowUp);
@@ -31,7 +31,7 @@ function create() {
 
   // DRAG DROP
   initImgs(this);
-  this.input.topOnly = false;
+  this.input.topOnly = true;
 
   this.input.on('dragstart', function (pointer, gameObject) {
 
@@ -46,7 +46,7 @@ function create() {
 
   });
 
-  var zone = this.add.zone(500, 10, 40, 40).setRectangleDropZone(40, 40);
+  var zone = this.add.zone(350, 15, 40, 40).setRectangleDropZone(40, 40);
   var graphics = this.add.graphics();
   initZone(zone, graphics);
 
@@ -80,45 +80,80 @@ function create() {
 
 
   // Robot
-  const robot = this.add.image(60, 100, "robo");
+  var robot = this.add.image(32 + 16, 32 + 16, "robo");
   robot.displayHeight = 32;
   robot.displayWidth = 32;
-  const runBtn = this.add.image(20, 160, "runBtn");
-  runBtn.displayHeight = 30;
-  runBtn.displayWidth = 30;
 
-  this.input.on('pointerup', function (pointer, gameObject) {
-    if (gameObject.texture.key === 'runBtn') {
-      move(robot);
+  var runBtn = this.add.image(390, 35, "runBtn");
+  runBtn.displayHeight = 60;
+  runBtn.displayWidth = 60;
+  this.children.bringToTop(runBtn);
+
+  this.input.on('pointerup', function (pointer) {
+
+    if (pointer.downX >= 300) {
+
+      robotMovement.push('DONE');
+      console.log('pointerUp');
+      var index = 0;
+      var x = robot.x;
+      var y = robot.y;
+      console.log("X", robot.x);
+      console.log("X", robot.y);
+      for (index = 0; index < robotMovement.length; index++) {
+        setTimeout((posIndex) => {
+          if (robotMovement[posIndex] === 'arrowUp') {
+            robot.y = robot.y - 32;
+            if (robot.y < 16 + 32) {
+              reset(this, zone, graphics, robot);
+            }
+          } else if (robotMovement[posIndex] === 'arrowDown') {
+            robot.y = robot.y + 32;
+            if (robot.y > 7 * 32) {
+              reset(this, zone, graphics, robot);
+            }
+          } else if (robotMovement[posIndex] === 'arrowLeft') {
+            robot.x = robot.x - 32;
+            if (robot.x < 16 + 32) {
+              reset(this, zone, graphics, robot);
+            }
+          } else if (robotMovement[posIndex] === 'arrowRight') {
+            robot.x = robot.x + 32;
+            if (robot.y > 7 * 32) {
+              reset(this, zone, graphics, robot);
+            }
+          } else if (robotMovement[posIndex] === 'DONE') {
+            robotMovement = [];
+          }
+        }, 500 * index, index);
+      }
     }
+
   }, this);
 }
 
-function move(robot) {
-  robotMovement.forEach(element => {
-    switch (element) {
-      case 'arrowUp':
-        robot.y -= 32;
-        break;
-      case 'arrowLeft':
-        robot.x -= 32;
-        break;
-      case 'arrowDown':
-        robot.y += 32;
-        break;
-      case 'arrowRight':
-        robot.x += 32;
-      default:
-        break;
-    }
-  });
+function reset(context, zone, graphics, robot) {
+  // graphics.clear();
+  // initImgs(context);
+  // zone = context.add.zone(350, 15, 40, 40).setRectangleDropZone(40, 40);
+  // graphics = context.add.graphics();
+  // initZone(zone, graphics);
+  // robot = context.add.image(32 + 16, 32 + 16, "robo");
+  // robot.displayHeight = 32;
+  // robot.displayWidth = 32;
+
+  // const runBtn = context.add.image(390, 35, "runBtn");
+  // runBtn.displayHeight = 60;
+  // runBtn.displayWidth = 60;
+  // context.children.bringToTop(runBtn);
+  alert('Please press F5 to try again');
 }
 
 function initImgs(context) {
-  initImg("arrowUp", context, 20, 20);
-  initImg("arrowLeft", context, 20, 55);
-  initImg("arrowDown", context, 20, 90);
-  initImg("arrowRight", context, 20, 125);
+  initImg("arrowUp", context, 275, 15);
+  initImg("arrowLeft", context, 275, 50);
+  initImg("arrowDown", context, 275, 85);
+  initImg("arrowRight", context, 275, 120);
 };
 
 function initImg(imgName, context, x, y) {
@@ -156,7 +191,8 @@ const config = {
   scene: {
     preload: preload,
     create: create
-  }
+  },
+  backgroundColor: '#ffffff'
 };
 
 const game = new Phaser.Game(config);
