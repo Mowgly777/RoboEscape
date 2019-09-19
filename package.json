@@ -33,6 +33,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "generate-maze": "^0.2.0",
     "phaser": "^3.16.2"
   }
 }

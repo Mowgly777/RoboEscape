@@ -1,32 +1,31 @@
 import Phaser from "phaser";
-import logoImg from "./assets/logo.png";
-
-const config = {
+var config = {
   type: Phaser.AUTO,
-  parent: "phaser-example",
   width: 800,
   height: 600,
+  parent: 'phaser-example',
+  pixelArt: true,
+  backgroundColor: '#1a1a2d',
   scene: {
-    preload: preload,
-    create: create
+      preload: preload,
+      create: create
   }
 };
 
-const game = new Phaser.Game(config);
+var game = new Phaser.Game(config);
 
-function preload() {
-  this.load.image("logo", logoImg);
+function preload ()
+{
+  this.load.image('tiles', './src/assets/drawtiles-spaced.png');
+  this.load.image('car', './src/assets/car90.png');
+  this.load.tilemapCSV('map', './src/assets/grid.csv');
 }
 
-function create() {
-  const logo = this.add.image(400, 150, "logo");
+function create ()
+{
+  var map = this.make.tilemap({ key: 'map', tileWidth: 32, tileHeight: 32 });
+  var tileset = map.addTilesetImage('tiles', null, 32, 32, 1, 2);
+  var layer = map.createStaticLayer(0, tileset, 0, 0);
 
-  this.tweens.add({
-    targets: logo,
-    y: 450,
-    duration: 2000,
-    ease: "Power2",
-    yoyo: true,
-    loop: -1
-  });
+  var player = this.add.image(32+16, 32+16, 'car');
 }
